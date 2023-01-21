@@ -10,6 +10,9 @@ const app = express();
 // Configurar CORS
 app.use(cors());
 
+// Lectura y parse del body
+app.use( express.json() );
+
 // DB
 dbConnection();
 
