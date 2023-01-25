@@ -1,4 +1,5 @@
 const { response } = require("express");
+const { validationResult } = require("express-validator");
 const Usuario = require("../models/usuario");
 
 const getUsuarios = async (request, res) => {
@@ -13,6 +14,15 @@ const getUsuarios = async (request, res) => {
 const crearUsuario = async (request, res) => {
     const { email, password, nombre } = request.body;
 
+    const errores = validationResult( request );
+
+    if (!errores.isEmpty()) {
+        return res.status(400).json({
+            ok: false,
+            errors: errores.mapped(),
+        });
+    }
+
     try {
 
         const existeEmail = await Usuario.findOne({email});
@@ -22,8 +32,6 @@ const crearUsuario = async (request, res) => {
                 ok: false,
                 msg: 'El correo ya está registrado'
             })
-        } else {
-            
         }
 
         const usuario = new Usuario(request.body);
